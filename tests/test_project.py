@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def test_required_files_exist():
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[1]
     required = [
         "main.py",
         "database.py",
@@ -21,14 +21,14 @@ def test_required_files_exist():
 
 
 def test_use_case_endpoints_are_present():
-    source = Path(__file__).with_name("main.py").read_text(encoding="utf-8")
+    source = (Path(__file__).resolve().parents[1] / "main.py").read_text(encoding="utf-8")
     assert '@app.post("/api/menu-items"' in source
     assert '@app.put("/api/menu-items/{item_id}")' in source
     assert '@app.patch("/api/menu-items/{item_id}/stock")' in source
 
 
 def test_responsive_rtl_interface():
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[1]
     html = (root / "static/index.html").read_text(encoding="utf-8")
     css = (root / "static/styles.css").read_text(encoding="utf-8")
     assert 'dir="rtl"' in html
@@ -37,7 +37,7 @@ def test_responsive_rtl_interface():
 
 
 def test_connection_status_matches_api_and_database_state():
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[1]
     html = (root / "static/index.html").read_text(encoding="utf-8")
     javascript = (root / "static/app.js").read_text(encoding="utf-8")
     assert 'id="serverStatus"' in html
@@ -48,7 +48,7 @@ def test_connection_status_matches_api_and_database_state():
 
 
 def test_seed_contains_five_rows_for_each_table():
-    source = Path(__file__).with_name("seed_demo_data.py").read_text(encoding="utf-8")
+    source = (Path(__file__).resolve().parents[1] / "seed_demo_data.py").read_text(encoding="utf-8")
     tree = ast.parse(source)
     values = {}
     for node in tree.body:
@@ -63,7 +63,7 @@ def test_seed_contains_five_rows_for_each_table():
 
 
 def test_uc025_updates_only_description_and_price():
-    source = Path(__file__).with_name("main.py").read_text(encoding="utf-8")
+    source = (Path(__file__).resolve().parents[1] / "main.py").read_text(encoding="utf-8")
     update_section = source.split('@app.put("/api/menu-items/{item_id}")', 1)[1]
     update_section = update_section.split('@app.patch("/api/menu-items/{item_id}/stock")', 1)[0]
     assert "SET Description=?, Price=?, UpdatedAt=SYSDATETIME()" in update_section
